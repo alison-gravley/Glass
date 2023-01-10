@@ -1,15 +1,14 @@
 package net.fabricmc.example;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.util.Identifier;
-
 import io.wispforest.owo.ui.container.Containers;
 import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Positioning;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.hud.Hud;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,35 +32,30 @@ public class ExampleMod implements ModInitializer {
 */
 
 public class ExampleMod implements ClientModInitializer {
-	// public static GlassScreen glassHud;
-	public static final Logger LOGGER = LoggerFactory.getLogger("amg_modid");
 
-	@Override
-	public void onInitializeClient() {
+  // public static GlassScreen glassHud;
+  public static final Logger LOGGER = LoggerFactory.getLogger("amg_modid");
 
-		// glassHud = new GlassScreen();
-		// glassHud.initializeComponents();
+  @Override
+  public void onInitializeClient() {
+    ClientTickEvents.END_CLIENT_TICK.register(client -> {
+      if (
+        MinecraftClient.isHudEnabled() &&
+        MinecraftClient.getInstance().player != null &&
+        MinecraftClient.getInstance().world != null
+      ) {
+        GlassScreen.getInstance().updateComponents();
+      }
+    });
 
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (MinecraftClient.isHudEnabled() && MinecraftClient.getInstance().player != null) {
-				GlassScreen.getInstance().updateComponents();
-			}
-		});
-
-		// Hud.add(new Identifier("owo-ui-academy", "hint"),
-		// () -> Containers.verticalFlow(Sizing.content(),
-		// Sizing.content()).child(Components.label(
-		// Text.empty().append("emptyText").formatted(Formatting.WHITE,
-		// Formatting.BOLD))
-		// .horizontalTextAlignment(HorizontalAlignment.LEFT))
-		// .padding(Insets.of(5))
-		// .positioning(Positioning.relative(0, 0)));
-
-		Hud.add(new Identifier("owo-ui-academy", "hint"),
-				() -> Containers.verticalFlow(Sizing.content(), Sizing.content())
-						.children(GlassScreen.getInstance().getComponents())
-						.padding(Insets.of(5))
-						.positioning(Positioning.relative(0, 0)));
-
-	}
+    Hud.add(
+      new Identifier("owo-ui-academy", "hint"),
+      () ->
+        Containers
+          .verticalFlow(Sizing.content(), Sizing.content())
+          .children(GlassScreen.getInstance().getComponents())
+          .padding(Insets.of(5))
+          .positioning(Positioning.relative(0, 0))
+    );
+  }
 }
