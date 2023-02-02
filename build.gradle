@@ -34,7 +34,7 @@ dependencies {
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
     // only if you plan to use owo-config
-    // annotationProcessor "io.wispforest:owo-lib:${project.owo_version}"
+    annotationProcessor "io.wispforest:owo-lib:${project.owo_version}"
     
     // include this if you don't want force your users to install owo
     // sentinel will warn them and give the option to download it automatically
@@ -53,6 +53,7 @@ tasks.withType(JavaCompile).configureEach {
 	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
 	it.options.release = 17
 }
+
 java {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.

@@ -1,0 +1,6 @@
+{
+  "parent": "original/generated",
+  "textures": {
+    "layer0": "glasshud:original/bow"
+  }
+}

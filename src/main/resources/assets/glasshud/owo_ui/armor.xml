@@ -1,0 +1,57 @@
+<owo-ui
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19.3/owo-ui.xsd"
+>
+  <components>
+    <flow-layout direction="horizontal">
+      <children>
+        <label id="speed-label">
+          <text>Glass Hud Texture Test</text>
+          <positioning type="relative">10,5</positioning>
+        </label>
+        <flow-layout direction="vertical">
+          <children>
+            <texture
+              id="bowTexture"
+              texture="glasshud:textures/original/bow.png"
+              texture-width="16"
+              texture-height="16"
+              region-width="16"
+              region-height="16"
+            >
+              <margins>
+                <all>5</all>
+              </margins>
+            </texture>
+
+            <flow-layout id="boxLayout" direction="vertical">
+              <children>
+                <box id="bowFillBar">
+                  <color>black</color>
+                  <fill>true</fill>
+                  <start-color>green</start-color>
+                  <end-color>green</end-color>
+                  <direction>left-to-right</direction>
+                  <sizing>
+                    <horizontal method="fixed">20</horizontal>
+                    <vertical method="fixed">5</vertical>
+                  </sizing>
+                  <z-index>0</z-index>
+                </box>
+              </children>
+              <sizing>
+                <horizontal method="fixed">10</horizontal>
+              </sizing>
+              <horizontal-alignment>left</horizontal-alignment>
+            </flow-layout>
+          </children>
+          <vertical-alignment>center</vertical-alignment>
+        </flow-layout>
+      </children>
+      <vertical-alignment>top</vertical-alignment>
+      <padding>
+        <all>10</all>
+      </padding>
+    </flow-layout>
+  </components>
+</owo-ui>
