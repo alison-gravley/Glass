@@ -1,6 +1,8 @@
 plugins {
 	id 'fabric-loom' version '1.0-SNAPSHOT'
 	id 'maven-publish'
+	id 'io.freefair.lombok' version '6.6.1'
+	id 'java'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -9,6 +11,10 @@ targetCompatibility = JavaVersion.VERSION_17
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+lombok {
+    version = "${project.lombok_version}"
+}
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -28,17 +34,17 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// Uncomment the following line to enable the deprecated Fabric API modules. 
-	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
+    //External Libraries
+	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
 
-	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
-	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
-    // only if you plan to use owo-config
-    annotationProcessor "io.wispforest:owo-lib:${project.owo_version}"
-    
-    // include this if you don't want force your users to install owo
-    // sentinel will warn them and give the option to download it automatically
-    include "io.wispforest:owo-sentinel:${project.owo_version}"
+    //Lombok
+	compileOnly "org.projectlombok:lombok:${project.lombok_version}"
+	annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
+
+    //Unit testing
+	testImplementation "org.hamcrest:hamcrest:${project.hamcrest_version}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${project.junit_version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${project.junit_version}"
 }
 
 processResources {
@@ -82,4 +88,76 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+test {
+  // Discover and execute JUnit4-based tests
+  useJUnit()
+
+  // Discover and execute TestNG-based tests
+  useTestNG()
+
+  // Discover and execute JUnit Platform-based tests
+  useJUnitPlatform()
+
+  // set a system property for the test JVM(s)
+  systemProperty 'some.prop', 'value'
+
+  // explicitly include or exclude tests
+  include 'net/glass/**'
+
+  // show standard out and standard error of the test JVM(s) on the console
+  testLogging.showStandardStreams = true
+
+  // set heap size for the test JVM(s)
+  minHeapSize = "512m"
+  maxHeapSize = "1024m"
+
+  // set JVM arguments for the test JVM(s)
+
+  // listen to events in the test execution lifecycle
+  beforeTest { descriptor ->
+     logger.lifecycle("Running test: " + descriptor)
+  }
+
+  // Fail the 'test' task on the first test failure
+  failFast = true
+
+  // listen to standard out and standard error of the test JVM(s)
+  onOutput { descriptor, event ->
+     logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+  }
+}
+
+sourceSets {
+    test {
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.compileClasspath
+    }
+}
+
+task printSourceSetInformation(){
+    doLast{
+        sourceSets.each { srcSet ->
+            println "["+srcSet.name+"]"
+            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+            println ""
+        }
+    }
+}
+
+task printSourceSetWithCompileClasspath(){
+    doLast{
+        sourceSets.each { srcSet ->
+            println "["+srcSet.name+"]"
+            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+            print "-->Compile classpath:\n"
+            srcSet.compileClasspath.files.each { 
+                print "  "+it.path+"\n"
+            }
+            println ""
+        }
+    }
 }
