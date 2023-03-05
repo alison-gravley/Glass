@@ -1,37 +1,30 @@
 package net.glass.data;
 
-import java.text.DecimalFormat;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.EquipmentSlot.Type;
-import net.minecraft.text.Text;
 
 public class GlassItemSlot {
 
     public static final double criticalThreshold = 0.01;
     public static final double warnThreshold = 0.05;
-    public static DecimalFormat df = new DecimalFormat("#,####.##");
 
     private final EquipmentSlot slot;
     private final Type slotType;
 
-    private int damageTaken;
-    private int maxDamage;
-    private boolean empty;
-    private boolean isElytra;
-    private boolean isUnbreakable;
+    private int damageTaken = 0;
+    private int maxDamage = 0;
+    private boolean empty = true;
+    private boolean isElytra = false;
+    private boolean isUnbreakable = false;
 
     protected GlassItemSlot(EquipmentSlot slot) {
         this.slot = slot;
-        damageTaken = 0;
-        maxDamage = 0;
-        empty = true;
-        isElytra = false;
         this.slotType = this.slot.getType();
     }
 
-    protected boolean isEmpty() {
-        return empty;
-    }
+    /*
+     * Protected Setters
+     */
 
     protected void setEmpty() {
         this.empty = true;
@@ -39,14 +32,6 @@ public class GlassItemSlot {
         this.maxDamage = 0;
         this.isElytra = false;
         this.isUnbreakable = false;
-    }
-
-    protected boolean isArmorSlot() {
-        return slotType == Type.ARMOR;
-    }
-
-    protected boolean isHandSlot() {
-        return slotType == Type.HAND;
     }
 
     protected void updateSlotHealth(
@@ -85,41 +70,49 @@ public class GlassItemSlot {
         }
     }
 
-    protected double healthPercentage() {
+    /*
+     * Public Getters
+     */
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public boolean isArmorSlot() {
+        return slotType == Type.ARMOR;
+    }
+
+    public boolean isHandSlot() {
+        return slotType == Type.HAND;
+    }
+
+    public double getHealthPercentage() {
         if (maxDamage == 0) {
-            return isUnbreakable ? 100 : 0;
+            return isUnbreakable ? 1 : 0;
         } else {
-            return (double) (damageLeft()) / maxDamage;
+            return (double) (getDamageLeft()) / maxDamage;
         }
     }
 
-    protected int damageLeft() {
+    public int getDamageLeft() {
         return this.damageTaken <= this.maxDamage
             ? (this.maxDamage - this.damageTaken)
             : 0;
     }
 
-    protected int damageTaken() {
+    public int getDamageTaken() {
         return this.damageTaken;
     }
 
-    protected int maxDamage() {
+    public int getMaxDamage() {
         return this.maxDamage;
-    }
-
-    protected String healthPercentageText() {
-        if (empty || isUnbreakable) {
-            return "-";
-        } else {
-            return GlassItemSlot.df.format(healthPercentage()) + "%";
-        }
     }
 
     protected String damageDetailText() {
         if (empty || isUnbreakable) {
             return "-";
         } else {
-            return "(" + damageLeft() + "/" + maxDamage + ")";
+            return "(" + getDamageLeft() + "/" + maxDamage + ")";
         }
     }
 

@@ -3,40 +3,34 @@ package net.glass.data;
 import static net.glass.GlassHud.LOGGER;
 import static net.glass.GlassHud.SETTING;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NonNull;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+@Getter
 public class PlayerData {
 
     private static final double mspt = 50;
 
-    private Vec3d lastPosition;
-    private long lastTime;
+    @Getter(AccessLevel.NONE)
+    private Vec3d lastPosition = new Vec3d(0, 0, 0);
 
-    private double speed;
-    private GlassItemSlot head;
-    private GlassItemSlot chest;
-    private GlassItemSlot legs;
-    private GlassItemSlot feet;
-    private GlassItemSlot mainhand;
-    private GlassItemSlot offhand;
+    @Getter(AccessLevel.NONE)
+    private long lastTime = 0;
 
-    protected PlayerData() {
-        lastPosition = new Vec3d(0, 0, 0);
-        lastTime = 0;
-        speed = 0;
-        head = new GlassItemSlot(EquipmentSlot.HEAD);
-        chest = new GlassItemSlot(EquipmentSlot.CHEST);
-        legs = new GlassItemSlot(EquipmentSlot.LEGS);
-        feet = new GlassItemSlot(EquipmentSlot.FEET);
-        mainhand = new GlassItemSlot(EquipmentSlot.MAINHAND);
-        offhand = new GlassItemSlot(EquipmentSlot.OFFHAND);
-    }
+    private double speed = 0;
+    private final GlassItemSlot head = new GlassItemSlot(EquipmentSlot.HEAD);
+    private final GlassItemSlot chest = new GlassItemSlot(EquipmentSlot.CHEST);
+    private final GlassItemSlot legs = new GlassItemSlot(EquipmentSlot.LEGS);
+    private final GlassItemSlot feet = new GlassItemSlot(EquipmentSlot.FEET);
+    private final GlassItemSlot mainhand = new GlassItemSlot(EquipmentSlot.MAINHAND);
+    private final GlassItemSlot offhand = new GlassItemSlot(EquipmentSlot.OFFHAND);
+
+    protected PlayerData() {}
 
     /**
      * Calculates the current Blocks Per Second of the player by interpolating
@@ -58,7 +52,7 @@ public class PlayerData {
         }
 
         //Only do this every 5 ticks or so
-        if (worldTime > lastTime + 5) {
+        if (worldTime > lastTime + SETTING.SPEED_UPDATE_RATE()) {
             double timePassed = mspt * (worldTime - lastTime);
             this.speed = (pos.distanceTo(lastPosition) / timePassed) * 1000;
             lastPosition = pos;
@@ -88,7 +82,7 @@ public class PlayerData {
      *
      * @param head Equipped item in the head slot of the player. May be empty or null
      */
-    protected void updateHead(@Nullable ItemStack head) {
+    protected void updateHead(ItemStack head) {
         updateSlot(this.head, head);
     }
 
@@ -96,7 +90,7 @@ public class PlayerData {
      *
      * @param chest Equipped item in the chest slot of the player. May be empty or null
      */
-    protected void updateChest(@Nullable ItemStack chest) {
+    protected void updateChest(ItemStack chest) {
         updateSlot(this.chest, chest);
     }
 
@@ -104,7 +98,7 @@ public class PlayerData {
      *
      * @param legs Equipped item in the leg slot of the player. May be empty or null
      */
-    protected void updateLegs(@Nullable ItemStack legs) {
+    protected void updateLegs(ItemStack legs) {
         updateSlot(this.legs, legs);
     }
 
@@ -112,7 +106,7 @@ public class PlayerData {
      *
      * @param feet Equipped item in the foot slot of the player. May be empty or null
      */
-    protected void updateFeet(@Nullable ItemStack feet) {
+    protected void updateFeet(ItemStack feet) {
         updateSlot(this.feet, feet);
     }
 
@@ -121,7 +115,7 @@ public class PlayerData {
      * @param mainhand Item held in the main hand of the player. May be empty, null, or
      * a non-damageable item.
      */
-    protected void updateMainHand(@Nullable ItemStack mainhand) {
+    protected void updateMainHand(ItemStack mainhand) {
         updateSlot(this.mainhand, mainhand);
     }
 
@@ -130,22 +124,26 @@ public class PlayerData {
      * @param offhand Item held in the off hand of the player. May be empty, null, or
      * a non-damageable item.
      */
-    protected void updateOffHand(@Nullable ItemStack offhand) {
+    protected void updateOffHand(ItemStack offhand) {
         updateSlot(this.offhand, offhand);
     }
 
-    /**
-     * @return The current calculated speed of the player
-     */
-    public double speed() {
-        return this.speed;
-    }
-
-    /**
-     *
-     * @return The current calculated speed of the player formatted as a Text object
-     */
-    public Text speedText() {
-        return Text.literal(GlassItemSlot.df.format(this.speed) + " m/s");
+    public GlassItemSlot getSlotByType(@NonNull EquipmentSlot type) {
+        switch (type) {
+            case CHEST:
+                return chest;
+            case FEET:
+                return feet;
+            case HEAD:
+                return head;
+            case LEGS:
+                return legs;
+            case MAINHAND:
+                return mainhand;
+            case OFFHAND:
+                return offhand;
+            default:
+                return head;
+        }
     }
 }

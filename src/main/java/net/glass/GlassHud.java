@@ -3,7 +3,6 @@ package net.glass;
 import net.fabricmc.api.ModInitializer;
 import net.glass.data.GlassData;
 import net.glass.settings.GlassConfig;
-//import net.glass.settings.GlassConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

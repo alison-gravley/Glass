@@ -4,21 +4,33 @@ import static net.glass.GlassHud.SETTING;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.map.MapState.PlayerUpdateTracker;
 import net.minecraft.text.Text;
 
+/**
+ * Use this to interact with the underlying data and update it
+ */
 public class GlassData {
 
     private final MinecraftClient client;
-    private final PlayerData playerData;
+    private final PlayerData playerData = new PlayerData();
+    private long lastUpdatedArmor = 0;
 
     public GlassData() {
         client = MinecraftClient.getInstance();
-        playerData = new PlayerData();
     }
 
+    public PlayerData getPlayerData() {
+        return playerData;
+    }
+
+    /**
+     * This will update the current state of the player data
+     */
     public void updatePlayerData() {
-        if (client != null && client.world != null && client.player != null) {
-            updateSpeed();
+        if (client == null || client.world == null || client.player == null) return;
+        updateSpeed();
+        if (SETTING.ARMOR_UPDATE_RATE() + lastUpdatedArmor < client.world.getTime()) {
             updateEquippedItems();
         }
     }
@@ -41,9 +53,5 @@ public class GlassData {
             playerData.updateMainHand(client.player.getMainHandStack());
             playerData.updateOffHand(client.player.getOffHandStack());
         }
-    }
-
-    public Text getSpeed() {
-        return playerData.speedText();
     }
 }

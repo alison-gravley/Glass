@@ -3,55 +3,116 @@
   xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.19.3/owo-ui.xsd"
 >
   <components>
-    <flow-layout direction="horizontal">
+    <flow-layout id="glassRoot" direction="vertical">
       <children>
-        <label id="speed-label">
-          <text>Glass Hud Texture Test</text>
-          <positioning type="relative">10,5</positioning>
-        </label>
-        <flow-layout direction="vertical">
-          <children>
-            <texture
-              id="bowTexture"
-              texture="glasshud:textures/original/bow.png"
-              texture-width="16"
-              texture-height="16"
-              region-width="16"
-              region-height="16"
-            >
-              <margins>
-                <all>5</all>
-              </margins>
-            </texture>
+        <!-- Speed Display -->
+        <flow-layout id="speedLayout" direction="horizontal">
+          <children />
+          <!-- OK -->
+          <vertical-alignment>top</vertical-alignment>
+          <horizontal-alignment>left</horizontal-alignment>
+        </flow-layout>
 
-            <flow-layout id="boxLayout" direction="vertical">
-              <children>
-                <box id="bowFillBar">
-                  <color>black</color>
-                  <fill>true</fill>
-                  <start-color>green</start-color>
-                  <end-color>green</end-color>
-                  <direction>left-to-right</direction>
-                  <sizing>
-                    <horizontal method="fixed">20</horizontal>
-                    <vertical method="fixed">5</vertical>
-                  </sizing>
-                  <z-index>0</z-index>
-                </box>
-              </children>
-              <sizing>
-                <horizontal method="fixed">10</horizontal>
-              </sizing>
-              <horizontal-alignment>left</horizontal-alignment>
-            </flow-layout>
+        <!-- Armor Views -->
+        <flow-layout id="armorLayout" direction="horizontal">
+          <children>
+            <template name="playerSlot">
+              <slot-name>head</slot-name>
+              <file-name>original/diamond_helmet.png</file-name>
+            </template>
+
+            <template name="playerSlot">
+              <slot-name>chest</slot-name>
+              <file-name>original/diamond_chestplate.png</file-name>
+            </template>
+
+            <template name="playerSlot">
+              <slot-name>legs</slot-name>
+              <file-name>original/diamond_leggings.png</file-name>
+            </template>
+
+            <template name="playerSlot">
+              <slot-name>feet</slot-name>
+              <file-name>original/diamond_boots.png</file-name>
+            </template>
+
+            <template name="playerSlot">
+              <slot-name>mainhand</slot-name>
+              <file-name>original/diamond_pickaxe.png</file-name>
+            </template>
+
+            <template name="playerSlot">
+              <slot-name>offhand</slot-name>
+              <file-name>original/empty_armor_slot_shield.png</file-name>
+            </template>
           </children>
-          <vertical-alignment>center</vertical-alignment>
+          <!-- OK -->
+          <vertical-alignment>top</vertical-alignment>
+          <horizontal-alignment>left</horizontal-alignment>
         </flow-layout>
       </children>
+      <!-- Root Properties -->
       <vertical-alignment>top</vertical-alignment>
+      <horizontal-alignment>left</horizontal-alignment>
+      <!-- OK, change to 3 after testing -->
       <padding>
-        <all>10</all>
+        <all>0</all>
       </padding>
     </flow-layout>
   </components>
+
+  <templates>
+    <playerSlot>
+      <flow-layout id="slot-{{slot-name}}-root" direction="vertical">
+        <children>
+          <texture
+            id="slot-{{slot-name}}-texture"
+            texture="glasshud:textures/{{file-name}}"
+            texture-width="16"
+            texture-height="16"
+            region-width="16"
+            region-height="16"
+          />
+          <flow-layout id="slot-{{slot-name}}-bar-layout" direction="vertical">
+            <children>
+              <box id="slot-{{slot-name}}-fillbar">
+                <start-color>green</start-color>
+                <color>green</color>
+                <fill>true</fill>
+                <direction>left-to-right</direction>
+                <sizing>
+                  <horizontal method="fill">100</horizontal>
+                  <vertical method="fill">100</vertical>
+                </sizing>
+                <positioning type="absolute">0,0</positioning>
+                <z-index>0</z-index>
+              </box>
+              <box id="slot-{{slot-name}}-filloutline">
+                <start-color>black</start-color>
+                <color>black</color>
+                <fill>false</fill>
+                <direction>left-to-right</direction>
+                <sizing>
+                  <horizontal method="fill">100</horizontal>
+                  <vertical method="fill">100</vertical>
+                </sizing>
+                <positioning type="absolute">0,0</positioning>
+                <z-index>1</z-index>
+              </box>
+            </children>
+            <sizing>
+              <horizontal method="fixed">18</horizontal>
+              <vertical method="fixed">4</vertical>
+            </sizing>
+            <horizontal-alignment>center</horizontal-alignment>
+          </flow-layout>
+        </children>
+        <horizontal-alignment>center</horizontal-alignment>
+        <vertical-alignment>top</vertical-alignment>
+        <padding>
+          <right>4</right>
+        </padding>
+      </flow-layout>
+    </playerSlot>
+  </templates>
 </owo-ui>

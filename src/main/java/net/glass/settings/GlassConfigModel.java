@@ -21,4 +21,10 @@ public class GlassConfigModel {
 
     @RangeConstraint(min = 0, max = 100)
     public int CRITICAL_THRESHOLD = 1;
+
+    @RangeConstraint(min = 5, max = 100)
+    public int ARMOR_UPDATE_RATE = 10;
+
+    @RangeConstraint(min = 5, max = 50)
+    public int SPEED_UPDATE_RATE = 5;
 }
